@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.5.xsd
+                        http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd">
+    <changeSet id="000000001-1" author="Kien">
+        <createTable tableName="district_price">
+            <column name="district_price_id" type="bigint">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="district_name" type="varchar(100)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="price_per_square_meter" type="bigint">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <createTable tableName="price_look_up">
+            <column name="price_look_up_id" type="bigint">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="district_price_id" type="bigint">
+                <constraints nullable="false"/>
+            </column>
+            <column name="area" type="float">
+                <constraints nullable="false"/>
+            </column>
+            <column name="look_up_date" type="datetime" >
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <addAutoIncrement tableName="district_price" columnName="district_price_id" columnDataType="bigint" startWith="100" incrementBy="1"/>
+        <addAutoIncrement tableName="price_look_up" columnName="price_look_up_id" columnDataType="bigint" startWith="1" incrementBy="1"/>
+
+        <addForeignKeyConstraint baseTableName="price_look_up" baseColumnNames="district_price_id" constraintName="price_look_up_fk_district_price_id"
+                                 referencedTableName="district_price" referencedColumnNames="district_price_id"/>
+    </changeSet>
+
+    <changeSet id="000000001-2" author="Kien">
+        <ext:loadData encoding="UTF-8"
+                      file="db/changelog/csv/district_price_001.csv"
+                      separator=";"
+                      identityInsertEnabled="true"
+                      tableName="district_price">
+        </ext:loadData>
+    </changeSet>
+</databaseChangeLog>
